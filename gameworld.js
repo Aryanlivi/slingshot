@@ -104,7 +104,7 @@ class Slingshot{
     this.sensor_box=Bodies.rectangle(posx-50,posy+110,50,50,{
         isSensor:true,
         isStatic:true,
-        label:"sensor_box"
+        label:"sensor_box";
     });
        Composite.addBody(this.main_body,this.wood);
        Composite.addBody(this.main_body,this.handle);
