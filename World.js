@@ -49,7 +49,7 @@ class Gameworld{
         catapult.addToWorld(this.world);
         this.enginecanvas.addEventListener("pointerdown",()=>{catapult.fire();})
         const stone=new Stone();
-        stone.init(15,50,180,395);
+        stone.init(15,50,150,350);
         stone.addToWorld(this.world);
         //this.app.ticker.add((delta)=>{this.sync()})
     }   

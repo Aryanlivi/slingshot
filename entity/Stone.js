@@ -20,7 +20,7 @@ export default class Stone extends BaseEntity{
         this.initial_ypos=y;
         this.size=size;
         this.weight=weight;
-        const circle=Bodies.circle(this.initial_xpos,this.initial_ypos,this.size,{isSleeping:false});
+        const circle=Bodies.circle(this.initial_xpos,this.initial_ypos,this.size);
         this.bodies.push(circle);
     }
     /**
