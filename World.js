@@ -39,7 +39,7 @@ class Gameworld{
             element: this.enginecanvas,
             engine: this.engine
         });
-       
+     
         // run the engine
         //Engine.run(this.engine);
         Runner.run(this.engine);
@@ -47,8 +47,9 @@ class Gameworld{
         const catapult=new Catapult();
         catapult.init(300,400);
         catapult.addToWorld(this.world);
+        this.enginecanvas.addEventListener("pointerdown",()=>{catapult.fire();})
         const stone=new Stone();
-        stone.init(300,400);
+        stone.init(15,50,180,395);
         stone.addToWorld(this.world);
         //this.app.ticker.add((delta)=>{this.sync()})
     }   
