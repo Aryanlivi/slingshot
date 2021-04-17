@@ -1,5 +1,5 @@
 import BaseEntity from "./BaseEntity.js"
-
+import Matter from "matter-js"
 const World=Matter.World;
 const Engine=Matter.Engine;
 const Runner=Matter.Runner;
@@ -20,7 +20,14 @@ export default class Stone extends BaseEntity{
         this.initial_ypos=y;
         this.size=size;
         this.weight=weight;
-        const circle=Bodies.circle(this.initial_xpos,this.initial_ypos,this.size);
+        const circle=Bodies.circle(this.initial_xpos,this.initial_ypos,this.size,{isStatic:true});
         this.bodies.push(circle);
+    }
+    /**
+     * 
+     * @param {Matter.World} world 
+     */
+    addToWorld(world){
+        World.add(world,this.bodies);
     }
 }
