@@ -1,0 +1,16 @@
+{
+  "name": "slingshot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aryan Manandhar",
+  "license": "ISC",
+  "dependencies": {
+    "matter-js": "^0.17.0",
+    "pixi.js": "^6.0.2"
+  }
+}
