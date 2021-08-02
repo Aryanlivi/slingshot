@@ -37,7 +37,34 @@ class Gameworld{
         this.enginecanvas=document.getElementById("enginecanvas")
         this.render = Render.create({
             element: this.enginecanvas,
-            engine: this.engine
+            engine: this.engine,
+            options:{
+            width: 800,
+                height: 600,
+                pixelRatio: 1,
+                background: '#14151f',
+                wireframeBackground: '#14151f',
+                //hasBounds: !!options.bounds,
+                enabled: true,
+                wireframes: true,
+                showSleeping: true,
+                showDebug: true,
+                showStats: false,
+                showPerformance: true,
+                showBroadphase: false,
+                showBounds: true,
+                showVelocity: false,
+                showCollisions: true,
+                showSeparations: false,
+                showAxes: false,
+                showPositions: true,
+                showAngleIndicator: false,
+                showIds: false,
+                showVertexNumbers: false,
+                showConvexHulls: false,
+                showInternalEdges: false,
+                showMousePosition: false
+            }
         });
      
         // run the engine
@@ -45,11 +72,11 @@ class Gameworld{
         Runner.run(this.engine);
         Render.run(this.render);
         const catapult=new Catapult();
-        catapult.init(300,400);
+        catapult.init(310,400);
         catapult.addToWorld(this.world);
         this.enginecanvas.addEventListener("pointerdown",()=>{catapult.fire();})
         const stone=new Stone();
-        stone.init(15,50,150,350);
+        stone.init(15,50,110,350);
         stone.addToWorld(this.world);
         //this.app.ticker.add((delta)=>{this.sync()})
     }   

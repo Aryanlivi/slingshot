@@ -1,4 +1,4 @@
-import Matter from "matter-js"
+import Matter, { Vector } from "matter-js"
 import BaseEntity from "./BaseEntity.js"
 
 const World=Matter.World;
@@ -14,12 +14,14 @@ const Mouse=Matter.Mouse;
 const MouseConstraint=Matter.MouseConstraint;
 const Events=Matter.Events;
 const Common=Matter.Common;
+const Bounds=Matter.Bounds;
 export default class Catapult extends BaseEntity{
     init(x,y){//300,400
         let group=Body.nextGroup(true);
+        let group2=Body.nextGroup(false);
         this.initial_xpos=x;
         this.initial_ypos=y;
-        Common.setDecomp(require('poly-decomp'));
+        //Common.setDecomp(require('poly-decomp'));
 
         const catapult=Composite.create({label:"Catapult"})
         this.catapult=catapult;
@@ -49,91 +51,104 @@ export default class Catapult extends BaseEntity{
         */
        
         const crowbarBaseWidth=450;
-        const crowbarBaseOffset=crowbarBaseWidth*0.5;
-        const crowbarBase_vertices= Vertices.fromPath('0 0 20 0 20 50 450 50 450 60 0 60');
-        const crowbarBase=Bodies.fromVertices(this.initial_xpos,this.initial_ypos,crowbarBase_vertices,
+        const crowbarBaseOffset=crowbarBaseWidth*0.45;
+        const crowbarBase_vertices= Vertices.fromPath('0 0 20 0 20 40 450 40 450 60 0 60');
+        /*
+        const crowbarBase=Bodies.fromVertices(this.initial_xpos-100,this.initial_ypos,crowbarBase_vertices,
         { 
             collisionFilter:{
                 group:group
             },
             label:"crowbarBase",
             isSleeping:true,
+            isStatic:false
             
         });
-        /*
-        const crowbarBase=Bodies.rectangle(this.initial_xpos,this.initial_ypos,crowbarBaseWidth,20,{
-            collisionFilter:{
-                group:group
-            },
-            label:"crowbarBase",
-            isSleeping:true
-        });
-        const crowbarBaseOffset=crowbarBaseWidth*0.45;
-
-        const crowbarHead=Bodies.rectangle(this.initial_xpos-crowbarBaseOffset,this.initial_ypos,10,50,{
-            collisionFilter:{
-                group:group
-            },
-            label:"crowbarHead",
-            isSleeping:true
-        });
-        
-        const compoundA=Body.create({
-            parts:[crowbarBase,crowbarHead]
-        })
+        Body.setCentre(crowbarBase,Vector.create(20,0),true);
         */
+        const pointA={x:0,y:50};
+        const pointB={x:20,y:50};
+        const pointC={x:20,y:0};
+        const pointD={x:0,y:0};
+        const bound=Bounds.create(pointA,pointB,pointC,pointD);
+        
+        const crowbarBase=Bodies.rectangle(this.initial_xpos,this.initial_ypos,450,30,{
+        collisionFilter:{
+            group:group
+        },
+        label:"crowbarBase",
+        isSleeping:true,
+        isStatic:false,
+        bounds:bound
+        
+        });
+        this.crowbarBase=crowbarBase
         const crowbarRestOffset=50;
-        const crowbarRest=Bodies.rectangle(this.initial_xpos-crowbarRestOffset,this.initial_ypos+100,80,20,{
+        const crowbarRest=Bodies.rectangle(this.initial_xpos-150,this.initial_ypos+100,10,10,{
             label:"crowbarRest",
             isStatic:true
         });
         const crowbarWeight=Bodies.rectangle(this.initial_xpos+crowbarBaseOffset,this.initial_ypos+100,50,50,{
             collisionFilter:{
-                group:group
+                group:group2
             },
             label:"crowbarWeight",
             isSleeping:true,
-            density:0.0000001
+            inertia:Infinity
         });
         this.crowbarWeight=crowbarWeight;
         const crowbarObsOffset=100;
-        const crowbarObs=Bodies.rectangle(this.initial_xpos+crowbarObsOffset,this.initial_ypos+crowbarObsOffset,30,30,{
+        const crowbarObs=Bodies.rectangle(this.initial_xpos-30,this.initial_ypos-80,30,30,{
+            collisionFilter:{
+                group:group2
+            },
             label:"crowbarObs",
-            isSensor:true,
+            //isSensor:true,
             isStatic:true
         });
 
         const jointA=Constraint.create({
             label:"jointA",
-            type:"pin",
-            bodyA:shaft,
-            bodyB:crowbarBase,
-            pointB:{x:50,y:5},
+            bodyA:crowbarBase,
+            pointB: Vector.clone(crowbarBase.position),
+            //pointB:{x:50,y:5},
             stiffness:1,
             length:0,
         });
+        
+        const jointB=Constraint.create({
+            label:"jointB",
+            type:"line",
+            bodyA:crowbarRest,
+            bodyB:crowbarBase,
+            pointA:{x:0,y:0},
+            pointB:{x:-190,y:0},
+            stiffness:1,
+            length:80,
+        });
+        this.jointB=jointB;
         const jointC=Constraint.create({
             label:"jointC",
             bodyA:crowbarBase,
             bodyB:crowbarWeight,
-            pointA:{x:crowbarBaseOffset+35,y:5},
+            pointA:{x:crowbarBaseOffset,y:0},
             stiffness:1,
-            length:80,
+            length:200,
         });
+        this.jointC=jointC;
         
         Composite.addBody(catapult,shaft);
         Composite.addBody(catapult,crowbarBase);
-        //Composite.addBody(catapult,crowbarHead);
-        //Composite.add(catapult,compoundA);
         Composite.addBody(catapult,crowbarRest);
         Composite.addBody(catapult,crowbarWeight);
         Composite.addBody(catapult,crowbarObs);
         Composite.addConstraint(catapult,jointA);
-       // Composite.addConstraint(catapult,jointB);
+        //Composite.addConstraint(catapult,jointB);
         Composite.addConstraint(catapult,jointC);
     }
     fire(){
-        Body.setDensity(this.crowbarWeight,0.7);
+        Body.setDensity(this.crowbarWeight,0.09);
+        Composite.removeConstraint(this.catapult,this.jointB);
     }
     /**
      * 
